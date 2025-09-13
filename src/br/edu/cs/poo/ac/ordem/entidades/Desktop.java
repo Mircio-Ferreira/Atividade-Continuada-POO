@@ -1,5 +1,16 @@
 package br.edu.cs.poo.ac.ordem.entidades;
 
-public class Desktop {
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+
+public class Desktop extends Equipamento{
+	
+	private boolean ehServido;
 }
