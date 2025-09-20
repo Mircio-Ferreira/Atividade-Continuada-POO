@@ -2,6 +2,8 @@ package br.edu.cs.poo.ac.ordem.entidades;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Formatter;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +14,7 @@ import lombok.Setter;
 @Setter
 
 public class OrdemServico {
-	
+
 	private Cliente cliente;
 	private PrecoBase precoBase;
 	private Notebook notebook;
@@ -20,27 +22,30 @@ public class OrdemServico {
 	private LocalDateTime dataHoraAbertura;
 	private int prazoEmDias;
 	private double valor;
-	//private Cliente cliente;
-	/*
-	 Método público LocalDate getDataEstimadaEntrega(), que calcula a data estimada de entrega, que é
-	 a soma da data e hora de abertura (sem considerar as horas) com o prazoEmDias.
-	 */
-	
+
+
 	public LocalDate getDataEstimadaEntrega() {
-		
-		LocalDate dataAbertura=dataHoraAbertura.toLocalDate();
+
+		LocalDate dataAbertura = dataHoraAbertura.toLocalDate();
 
 		return dataAbertura.plusDays(prazoEmDias);
 	}
-	
-	/*
-	 * Método público String getNumero(): retorna a concatenação do mês, ano, dia, hora e minuto com o
-	   cpf ou cnpj do cliente, se o cpf ou cnpj do cliente for um cnpj; ou retorna a concatenação do mês,
-       ano, dia, hora e minuto com “000” e com o cpf ou cnpj do cliente, se o cpf ou cnpj do cliente for um
-       cnpj.
-       ????
-	 */
-	
-	
-	
+
+
+	public String getNumero() {
+		
+		String concatenacao="";
+		if (notebook != null) {
+			concatenacao = notebook.getIdTipo();
+		} 
+		else if (desktop != null) {
+			concatenacao = desktop.getIdTipo();
+		}
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String formatado = dataHoraAbertura.format(formatter);
+        concatenacao+=formatado;
+		
+		return concatenacao;
+	}
+
 }

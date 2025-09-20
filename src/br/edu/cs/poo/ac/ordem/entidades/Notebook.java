@@ -2,9 +2,7 @@ package br.edu.cs.poo.ac.ordem.entidades;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
-@SuperBuilder
 @Getter
 @Setter
 
@@ -12,4 +10,16 @@ import lombok.experimental.SuperBuilder;
 public class Notebook extends Equipamento {
 	
 	private boolean carregaDadosSensiveis;
+
+	public Notebook(String Serial, String descricao, boolean ehNovo, double valorEstimado,
+			boolean carregaDadosSensiveis) {
+		super(Serial, descricao, ehNovo, valorEstimado);
+		this.carregaDadosSensiveis = carregaDadosSensiveis;
+	}
+	
+	public String getIdTipo(){
+		return "NO";
+	}
+	
+	
 }
