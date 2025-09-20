@@ -3,7 +3,6 @@ package br.edu.cs.poo.ac.ordem.entidades;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Formatter;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,7 +22,6 @@ public class OrdemServico {
 	private int prazoEmDias;
 	private double valor;
 
-
 	public LocalDate getDataEstimadaEntrega() {
 
 		LocalDate dataAbertura = dataHoraAbertura.toLocalDate();
@@ -31,20 +29,23 @@ public class OrdemServico {
 		return dataAbertura.plusDays(prazoEmDias);
 	}
 
-
 	public String getNumero() {
-		
-		String concatenacao="";
+
+		String concatenacao = "";
 		if (notebook != null) {
 			concatenacao = notebook.getIdTipo();
-		} 
-		else if (desktop != null) {
+		} else if (desktop != null) {
 			concatenacao = desktop.getIdTipo();
 		}
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        String formatado = dataHoraAbertura.format(formatter);
-        concatenacao+=formatado;
-		
+		String formatado = dataHoraAbertura.format(formatter);
+		concatenacao += formatado;
+
+		if (cliente.getCpfCnpj().length() == 11)
+			concatenacao += "000" + cliente.getCpfCnpj();
+		else
+			concatenacao += cliente.getCpfCnpj();
+
 		return concatenacao;
 	}
 
