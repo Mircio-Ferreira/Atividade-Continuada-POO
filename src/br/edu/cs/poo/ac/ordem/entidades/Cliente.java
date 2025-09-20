@@ -2,8 +2,9 @@ package br.edu.cs.poo.ac.ordem.entidades;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.io.Serializable;
 
-public class Cliente {
+public class Cliente implements Serializable {
 
 	private String cpfCnpj;
 	private String nome;
