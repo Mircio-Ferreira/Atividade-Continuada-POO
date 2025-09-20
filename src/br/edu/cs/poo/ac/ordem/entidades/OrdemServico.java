@@ -38,9 +38,9 @@ public class OrdemServico implements Serializable {
 		} else if (desktop != null) {
 			concatenacao = desktop.getIdTipo();
 		}
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-		String formatado = dataHoraAbertura.format(formatter);
-		concatenacao += formatado;
+		
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+	    concatenacao += dataHoraAbertura.format(formatter);
 
 		if (cliente.getCpfCnpj().length() == 11)
 			concatenacao += "000" + cliente.getCpfCnpj();
