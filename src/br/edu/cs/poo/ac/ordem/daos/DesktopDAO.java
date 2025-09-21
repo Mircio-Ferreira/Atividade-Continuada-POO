@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import br.edu.cs.poo.ac.ordem.entidades.Desktop;
 
-//O identificador único, por objeto, de Desktop é a concatenação do retorno 
+//O identificador único, por objeto, de Desktop é a concatenação do retorno
 //do método getTipo com o atributo serial...
 
 public class DesktopDAO extends DAOGenerico {

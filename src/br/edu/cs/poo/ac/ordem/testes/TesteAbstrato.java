@@ -11,18 +11,18 @@ public class TesteAbstrato {
 	protected final CadastroObjetos cadastro;
 	private final Class classeCadastro;
 	private final String diretorio;
-	
+
 	public TesteAbstrato(Class classeCadastro) {
 		this.classeCadastro = classeCadastro;
 		this.cadastro = new CadastroObjetos(this.classeCadastro);
-		this.diretorio = "." + SEP + this.classeCadastro.getSimpleName(); 
+		this.diretorio = "." + SEP + this.classeCadastro.getSimpleName();
 	}
-	
+
 	@BeforeEach
 	public void limparRegistros() {
 		FileUtils.limparDiretorio(diretorio);
 	}
-	
+
 	protected int obterQuantidadeRegistros() {
 		File dir = new File(diretorio);
 		String[] arqs = dir.list();

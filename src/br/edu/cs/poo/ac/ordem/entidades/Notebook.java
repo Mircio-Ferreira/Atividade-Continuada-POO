@@ -8,7 +8,7 @@ import lombok.Setter;
 
 
 public class Notebook extends Equipamento {
-	
+
 	private boolean carregaDadosSensiveis;
 
 	public Notebook(String Serial, String descricao, boolean ehNovo, double valorEstimado,
@@ -16,10 +16,10 @@ public class Notebook extends Equipamento {
 		super(Serial, descricao, ehNovo, valorEstimado);
 		this.carregaDadosSensiveis = carregaDadosSensiveis;
 	}
-	
+
 	public String getIdTipo(){
 		return "NO";
 	}
-	
-	
+
+
 }

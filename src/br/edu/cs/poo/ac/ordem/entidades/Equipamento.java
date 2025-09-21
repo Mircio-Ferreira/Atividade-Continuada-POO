@@ -1,12 +1,11 @@
 package br.edu.cs.poo.ac.ordem.entidades;
 
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.io.Serializable;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 @AllArgsConstructor
 @Getter
@@ -17,5 +16,5 @@ public class Equipamento implements Serializable {
 	private String descricao;
 	private boolean ehNovo;
 	private double valorEstimado;
-	
+
 }

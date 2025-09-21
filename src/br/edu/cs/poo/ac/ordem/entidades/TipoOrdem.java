@@ -30,7 +30,7 @@ public enum TipoOrdem implements Serializable {
                 return tipo;
             }
         }
-        
+
         return null;
 
     }
