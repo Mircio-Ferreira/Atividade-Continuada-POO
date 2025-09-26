@@ -27,11 +27,27 @@ public class StringUtils {
 	}
 
 	public static boolean emailValido(String email) {
-		return false;
+		if(email==null) return false;
+		else {
+			if(email.isBlank() || email.contains(" ") || !email.contains(".") || !email.contains("@") ) return false;
+			
+			else return true;
+			
+		}
 		
 	}
 
 	public static boolean telefoneValido(String tel) {
-		return false;
+		if(tel==null) return false;
+		
+		else {
+			// teste de caracter
+			if(tel.isBlank() || tel.contains(" ")  || !tel.contains("(") || !tel.contains(")") ) return false;
+			
+			 // tel ==12 ou tel == 13
+			if(tel.length() < 12 || tel.length() > 13) return false;
+			
+			else return true;
+		}
 	}
 }
