@@ -3,13 +3,16 @@ package br.edu.cs.poo.ac.utils;
 public class StringUtils {
 	
 	public static boolean estaVazia(String str) {
-		
-		if(str == null || str.length()==0 ) return true;
-		
-		if(str.isBlank()) return true;
-		
-		return false;
-		
+		if(str == null) {
+			return true;
+		}
+		for(int i = 0; i < str.length(); i++) {
+			char atual = str.charAt(i);
+			if(atual != ' ') {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public static boolean tamanhoExcedido(String str, int tamanho) {
