@@ -21,19 +21,29 @@ public class ValidadorCPFCNPJ {
 		return new ResultadoValidacaoCPFCNPJ(cpf, cnpj, tipoERRO);
 		
 	}
+	
+	private static boolean isNumber(char c) {
+		return c >= '0' && c <= '9';
+	}
 
 	public static boolean isCPF(String valor) {
 		if(valor==null) return false;
-		if (valor.length() == 11)
-			return true;
-		return false;
+		if (valor.length() != 11)
+			return false;
+		for(int i = 0; i < 11; i++)
+			if (!isNumber(valor.charAt(i)))
+				return false;
+		return true;
 	}
 
 	public static boolean isCNPJ(String valor) {
 		if(valor==null) return false;
-		if (valor.length() == 14)
-			return true;
-		return false;
+		if (valor.length() != 14)
+			return false;
+		for(int i = 0; i < 14; i++)
+			if (!isNumber(valor.charAt(i)))
+				return false;
+		return true;
 	}
 
 	public static ErroValidacaoCPFCNPJ validarCPF(String cpf) {
