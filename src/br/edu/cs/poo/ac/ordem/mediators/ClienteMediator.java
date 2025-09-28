@@ -119,11 +119,26 @@ public class ClienteMediator {
             erros.adicionar("Nome tem mais de 50 caracteres");
         }
 
-        // Contato
+        // Contato + Data: atenção à ordem conforme testes
         Contato contato = cliente.getContato();
         if (contato == null) {
+            // quando contato é nulo, a mensagem "Contato não informado" deve vir antes da data
             erros.adicionar("Contato não informado");
+
+            // depois validamos a data
+            if (cliente.getDataCadastro() == null) {
+                erros.adicionar("Data do cadastro não informada");
+            } else if (cliente.getDataCadastro().isAfter(LocalDate.now())) {
+                erros.adicionar("Data do cadastro não pode ser posterior à data atual");
+            }
         } else {
+            // quando contato existe, o teste espera que a mensagem de data venha ANTES da mensagem específica do contato
+            if (cliente.getDataCadastro() == null) {
+                erros.adicionar("Data do cadastro não informada");
+            } else if (cliente.getDataCadastro().isAfter(LocalDate.now())) {
+                erros.adicionar("Data do cadastro não pode ser posterior à data atual");
+            }
+
             boolean emailOk = StringUtils.emailValido(contato.getEmail());
             boolean telOk = StringUtils.telefoneValido(contato.getCelular());
 
@@ -136,13 +151,6 @@ public class ClienteMediator {
             } else if (contato.isEhZap() && StringUtils.estaVazia(contato.getCelular())) {
                 erros.adicionar("Celular não informado e indicador de zap ativo");
             }
-        }
-
-        // Data de cadastro
-        if (cliente.getDataCadastro() == null) {
-            erros.adicionar("Data do cadastro não informada");
-        } else if (cliente.getDataCadastro().isAfter(LocalDate.now())) {
-            erros.adicionar("Data do cadastro não pode ser posterior à data atual");
         }
 
         if (erros.tamanho() > 0) {
