@@ -17,36 +17,51 @@ public class EquipamentoMediator {
         desktopDAO = new DesktopDAO();
     }
     
+    public static EquipamentoMediator getInstancia() {
+    	return instancia;
+    }
+    
     public ResultadoMediator incluirDesktop(Desktop desk) {
+    	return null;
     }
 
     public ResultadoMediator alterarDesktop(Desktop desk) {
+    	return null;
     }
 
     public ResultadoMediator incluirNotebook(Notebook note) {
+    	return null;
     }
 
     public ResultadoMediator alterarNotebook(Notebook note) {
+    	return null;
     }
 
     public ResultadoMediator excluirNotebook(String idTipoSerial) {
+    	return null;
     }
 
     public ResultadoMediator excluirDesktop(String idTipoSerial) {
+    	return null;
     }
 
     public Notebook buscarNotebook(String idTipoSerial) {
+    	return null;
     }
 
     public Desktop buscarDesktop(String idTipoSerial) {
+    	return null;
     }
 
-    public ResultadoMediator validarDesktop(Desktot desk) {
+    public ResultadoMediator validarDesktop(Desktop desk) {
+    	return null;
     }
-
-    public ResultadoMediator validarDesktop(Desktot desk) {
+    
+    public ResultadoMediator validarNotebook(Notebook note) {
+    	return null;
     }
 
     public ResultadoMediator validar(DadosEquipamento equip) {
+    	return null;
     }
 }
