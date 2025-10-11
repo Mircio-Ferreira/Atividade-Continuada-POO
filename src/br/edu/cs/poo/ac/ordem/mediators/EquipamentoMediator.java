@@ -1,20 +1,21 @@
 package br.edu.cs.poo.ac.ordem.mediators;
 
+import br.edu.cs.poo.ac.ordem.daos.DesktopDAO;
+import br.edu.cs.poo.ac.ordem.daos.NotebookDAO;
 import br.edu.cs.poo.ac.ordem.entidades.Desktop;
 import br.edu.cs.poo.ac.ordem.entidades.Notebook;
-import br.edu.cs.poo.ac.ordem.daos.NotebookDAO;
-import br.edu.cs.poo.ac.ordem.daos.DesktopDAO;
+import br.edu.cs.poo.ac.utils.StringUtils;
 
 public class EquipamentoMediator {
     
     private static EquipamentoMediator instancia;
     
     private NotebookDAO notebookDao;
-    private DesktopDAO desktopDAO;
+    private DesktopDAO desktopDao;
     
     public EquipamentoMediator() {
         notebookDao=new NotebookDAO();
-        desktopDAO = new DesktopDAO();
+        desktopDao = new DesktopDAO();
     }
     
     public static EquipamentoMediator getInstancia() {
@@ -46,11 +47,16 @@ public class EquipamentoMediator {
     }
 
     public Notebook buscarNotebook(String idTipoSerial) {
-    	return null;
+    	if(StringUtils.estaVazia(idTipoSerial)) return null;
+    	
+    	return notebookDao.buscar(idTipoSerial);
     }
 
     public Desktop buscarDesktop(String idTipoSerial) {
-    	return null;
+    	if(StringUtils.estaVazia(idTipoSerial)) return null;
+    	
+    	return desktopDao.buscar(idTipoSerial);
+    	
     }
 
     public ResultadoMediator validarDesktop(Desktop desk) {
