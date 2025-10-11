@@ -14,7 +14,7 @@ public class EquipamentoMediator {
 	private NotebookDAO notebookDao;
 	private DesktopDAO desktopDao;
 
-	public EquipamentoMediator() {
+	private EquipamentoMediator() {
 		notebookDao = new NotebookDAO();
 		desktopDao = new DesktopDAO();
 	}
@@ -26,7 +26,18 @@ public class EquipamentoMediator {
 	}
 
 	public ResultadoMediator incluirDesktop(Desktop desk) {
-		return null;
+		ResultadoMediator resValidacao = validarDesktop(desk);
+        if (!resValidacao.isValidado()) return resValidacao;
+
+        Desktop existente = desktopDao.buscar(desk.getIdTipo() + desk.getSerial());
+        if (existente != null) {
+            ListaString erros = new ListaString();
+            erros.adicionar("Serial do desktop já existente");
+            return new ResultadoMediator(true, false, erros);
+        }
+
+        desktopDao.incluir(desk);
+        return new ResultadoMediator(true, true, new ListaString());
 	}
 
 	public ResultadoMediator alterarDesktop(Desktop desk) {
@@ -65,69 +76,24 @@ public class EquipamentoMediator {
 	}
 
 	public ResultadoMediator validarDesktop(Desktop desk) {
-		ListaString list = new ListaString();
-		ResultadoMediator res = new ResultadoMediator(false, false, list);
-		if (desk == null) {
-			list.adicionar("Desktop não informado");
-			return res;
-		}
-		if (StringUtils.estaVazia(desk.getDescricao())) {
-			list.adicionar("Descrição não informada");
-		} else {
-			if (StringUtils.tamanhoExcedido(desk.getDescricao(), 150)) {
-				list.adicionar("Descrição tem mais de 150 caracteres");
-			}
-			if (StringUtils.tamanhoMenor(desk.getDescricao(), 9)) {
-				list.adicionar("Descrição tem menos de 10 caracteres");
-			}
-		}
-		
-		if (StringUtils.estaVazia(desk.getSerial())) {
-			list.adicionar("Serial não informado");
-		}
-		
-		if (desk.getValorEstimado() <= 0) {
-			list.adicionar("Valor estimado menor ou igual a zero");
-		}
-
-		return res;
+		DadosEquipamento equip = desk == null ? null : new DadosEquipamento(desk.getSerial(), desk.getDescricao(), desk.isEhNovo(), desk.getValorEstimado());
+		return validarEquip(equip, "Desktop não informado");
 	}
 
 	public ResultadoMediator validarNotebook(Notebook note) {
-		ListaString list = new ListaString();
-		ResultadoMediator res = new ResultadoMediator(false, false, list);
-		if (note == null) {
-			list.adicionar("Notebook não informado");
-			return res;
-		}
-		if (StringUtils.estaVazia(note.getDescricao())) {
-			list.adicionar("Descrição não informada");
-		} else {
-			if (StringUtils.tamanhoExcedido(note.getDescricao(), 150)) {
-				list.adicionar("Descrição tem mais de 150 caracteres");
-			}
-			if (StringUtils.tamanhoMenor(note.getDescricao(), 9)) {
-				list.adicionar("Descrição tem menos de 10 caracteres");
-			}
-		}
-		
-		if (StringUtils.estaVazia(note.getSerial())) {
-			list.adicionar("Serial não informado");
-		}
-		
-		if (note.getValorEstimado() <= 0) {
-			list.adicionar("Valor estimado menor ou igual a zero");
-		}
-
-		return res;
+		DadosEquipamento equip = note == null ? null : new DadosEquipamento(note.getSerial(), note.getDescricao(), note.isEhNovo(), note.getValorEstimado());
+		return validarEquip(equip, "Notebook não informado");
 	}
 
 	public ResultadoMediator validar(DadosEquipamento equip) {
+		return validarEquip(equip, "Dados básicos do equipamento não informados");
+	}
+	
+	private ResultadoMediator validarEquip(DadosEquipamento equip, String str) {
 		ListaString list = new ListaString();
-		ResultadoMediator res = new ResultadoMediator(false, false, list);
 		if (equip == null) {
-			list.adicionar("Dados básicos do equipamento não informados");
-			return res;
+			list.adicionar(str);
+			return new ResultadoMediator(false, false, list);
 		}
 		if (StringUtils.estaVazia(equip.getDescricao())) {
 			list.adicionar("Descrição não informada");
@@ -148,6 +114,6 @@ public class EquipamentoMediator {
 			list.adicionar("Valor estimado menor ou igual a zero");
 		}
 
-		return res;
+		return new ResultadoMediator(list.tamanho() == 0, false, list);
 	}
 }
