@@ -65,11 +65,61 @@ public class EquipamentoMediator {
 	}
 
 	public ResultadoMediator validarDesktop(Desktop desk) {
-		return null;
+		ListaString list = new ListaString();
+		ResultadoMediator res = new ResultadoMediator(false, false, list);
+		if (desk == null) {
+			list.adicionar("Desktop não informado");
+			return res;
+		}
+		if (StringUtils.estaVazia(desk.getDescricao())) {
+			list.adicionar("Descrição não informada");
+		} else {
+			if (StringUtils.tamanhoExcedido(desk.getDescricao(), 150)) {
+				list.adicionar("Descrição tem mais de 150 caracteres");
+			}
+			if (StringUtils.tamanhoMenor(desk.getDescricao(), 9)) {
+				list.adicionar("Descrição tem menos de 10 caracteres");
+			}
+		}
+		
+		if (StringUtils.estaVazia(desk.getSerial())) {
+			list.adicionar("Serial não informado");
+		}
+		
+		if (desk.getValorEstimado() <= 0) {
+			list.adicionar("Valor estimado menor ou igual a zero");
+		}
+
+		return res;
 	}
 
 	public ResultadoMediator validarNotebook(Notebook note) {
-		return null;
+		ListaString list = new ListaString();
+		ResultadoMediator res = new ResultadoMediator(false, false, list);
+		if (note == null) {
+			list.adicionar("Notebook não informado");
+			return res;
+		}
+		if (StringUtils.estaVazia(note.getDescricao())) {
+			list.adicionar("Descrição não informada");
+		} else {
+			if (StringUtils.tamanhoExcedido(note.getDescricao(), 150)) {
+				list.adicionar("Descrição tem mais de 150 caracteres");
+			}
+			if (StringUtils.tamanhoMenor(note.getDescricao(), 9)) {
+				list.adicionar("Descrição tem menos de 10 caracteres");
+			}
+		}
+		
+		if (StringUtils.estaVazia(note.getSerial())) {
+			list.adicionar("Serial não informado");
+		}
+		
+		if (note.getValorEstimado() <= 0) {
+			list.adicionar("Valor estimado menor ou igual a zero");
+		}
+
+		return res;
 	}
 
 	public ResultadoMediator validar(DadosEquipamento equip) {
