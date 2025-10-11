@@ -2,6 +2,7 @@ package br.edu.cs.poo.ac.ordem.mediators;
 
 import br.edu.cs.poo.ac.ordem.daos.DesktopDAO;
 import br.edu.cs.poo.ac.ordem.daos.NotebookDAO;
+import br.edu.cs.poo.ac.ordem.entidades.Cliente;
 import br.edu.cs.poo.ac.ordem.entidades.Desktop;
 import br.edu.cs.poo.ac.ordem.entidades.Notebook;
 import br.edu.cs.poo.ac.utils.ListaString;
@@ -41,23 +42,84 @@ public class EquipamentoMediator {
 	}
 
 	public ResultadoMediator alterarDesktop(Desktop desk) {
-		return null;
+        ResultadoMediator resValidacao = validarDesktop(desk);
+        if (!resValidacao.isValidado()) return resValidacao;
+
+        Desktop existente = desktopDao.buscar(desk.getIdTipo()+desk.getSerial());
+        if (existente == null) {
+            ListaString erros = new ListaString();
+            erros.adicionar("Serial do desktop não existente");
+            return new ResultadoMediator(true, false, erros);
+        }
+
+        desktopDao.alterar(desk);
+        return new ResultadoMediator(true, true, new ListaString());
 	}
 
 	public ResultadoMediator incluirNotebook(Notebook note) {
-		return null;
+		ResultadoMediator resValidacao = validarNotebook(note);
+        if (!resValidacao.isValidado()) return resValidacao;
+
+        Notebook existente = notebookDao.buscar(note.getIdTipo() + note.getSerial());
+        if (existente != null) {
+            ListaString erros = new ListaString();
+            erros.adicionar("Serial do notebook já existente");
+            return new ResultadoMediator(true, false, erros);
+        }
+
+        notebookDao.incluir(note);
+        return new ResultadoMediator(true, true, new ListaString());
 	}
 
 	public ResultadoMediator alterarNotebook(Notebook note) {
-		return null;
+        ResultadoMediator resValidacao = validarNotebook(note);
+        if (!resValidacao.isValidado()) return resValidacao;
+
+        Notebook existente = notebookDao.buscar(note.getIdTipo()+note.getSerial());
+        if (existente == null) {
+            ListaString erros = new ListaString();
+            erros.adicionar("Serial do notebook não existente");
+            return new ResultadoMediator(true, false, erros);
+        }
+
+        notebookDao.alterar(note);
+        return new ResultadoMediator(true, true, new ListaString());
 	}
 
 	public ResultadoMediator excluirNotebook(String idTipoSerial) {
-		return null;
+        if (StringUtils.estaVazia(idTipoSerial)) {
+            ListaString erros = new ListaString();
+            erros.adicionar("Id do tipo + serial do notebook não informado");
+            return new ResultadoMediator(false, false, erros);
+        }
+
+        Notebook existente = notebookDao.buscar(idTipoSerial);
+        if (existente == null) {
+            ListaString erros = new ListaString();
+            erros.adicionar("Serial do notebook não existente");
+            return new ResultadoMediator(true, false, erros);
+        }
+
+        notebookDao.excluir(idTipoSerial);
+        return new ResultadoMediator(true, true, new ListaString());
 	}
 
 	public ResultadoMediator excluirDesktop(String idTipoSerial) {
-		return null;
+        if (StringUtils.estaVazia(idTipoSerial)) {
+            ListaString erros = new ListaString();
+            erros.adicionar("Id do tipo + serial do desktop não informado");
+            return new ResultadoMediator(false, false, erros);
+        }
+
+        Desktop existente = desktopDao.buscar(idTipoSerial);
+        if (existente == null) {
+            ListaString erros = new ListaString();
+            erros.adicionar("Serial do desktop não existente");
+            return new ResultadoMediator(true, false, erros);
+        }
+
+        desktopDao.excluir(idTipoSerial);
+        return new ResultadoMediator(true, true, new ListaString());
 	}
 
 	public Notebook buscarNotebook(String idTipoSerial) {
