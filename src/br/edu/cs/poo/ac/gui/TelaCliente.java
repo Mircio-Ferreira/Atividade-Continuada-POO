@@ -91,7 +91,18 @@ public class TelaCliente extends JFrame {
 		JButton btnExcluir = new JButton("Excluir");
 		btnExcluir.addActionListener(e -> excluir());
 		getContentPane().add(btnExcluir);
-
+		
+		//Botao Buscar
+		JButton btnBuscar = new JButton("Buscar");
+		btnBuscar.addActionListener(e -> buscar());
+		getContentPane().add(btnBuscar);
+		
+		//Botao limparCampos
+		JButton btnLimparCampos = new JButton("Limpar Campos");
+		btnLimparCampos.addActionListener(e ->limparCampos());
+		getContentPane().add(btnLimparCampos);
+		
+		
 		setVisible(true);
 	}
 
@@ -99,7 +110,7 @@ public class TelaCliente extends JFrame {
 		Contato cont = new Contato(txtEmail.getText(), txtCelular.getText(), chkZap.isSelected());
 		DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		LocalDate data = LocalDate.parse(txtData.getText(), formato);
-		return new Cliente(txtCpfCnpj.getText().replaceAll("\\D", ""), txtNome.getText(), cont, data);
+		return new Cliente(txtCpfCnpj.getText(), txtNome.getText(), cont, data);
 	}
 
 	private void incluir() {
@@ -127,5 +138,39 @@ public class TelaCliente extends JFrame {
 		ResultadoMediator msg = mediator.excluir(cpfCnpj);
 		JOptionPane.showMessageDialog(this,
 				msg.isOperacaoRealizada() ? "Exclusão realizada com sucesso!" : msg.toString());
+		
 	}
+	
+	private void buscar() {
+	    String cpfCnpj = txtCpfCnpj.getText().replaceAll("\\D", "");
+	    if (cpfCnpj.isEmpty()) {
+	        JOptionPane.showMessageDialog(this, "Digite o CPF ou CNPJ para buscar.");
+	        return;
+	    }
+
+	    Cliente cliente = mediator.buscar(cpfCnpj);
+
+	    if (cliente == null) {
+	        JOptionPane.showMessageDialog(this, "Cliente não encontrado!");
+	        return;
+	    }
+
+	    // Preenche os campos com os dados do cliente encontrado
+	    txtNome.setText(cliente.getNome());
+	    txtEmail.setText(cliente.getContato().getEmail());
+	    txtCelular.setText(cliente.getContato().getCelular());
+	    chkZap.setSelected(cliente.getContato().isEhZap());
+	    txtData.setText(cliente.getDataCadastro().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+
+	    JOptionPane.showMessageDialog(this, "Cliente encontrado e carregado com sucesso!");
+	}
+	
+    private void limparCampos() {
+    	txtCpfCnpj.setText("");
+    	txtNome.setText("");
+	    txtEmail.setText("");
+	    txtCelular.setText("");
+	    chkZap.setSelected(false);
+	    txtData.setText("");
+    }
 }

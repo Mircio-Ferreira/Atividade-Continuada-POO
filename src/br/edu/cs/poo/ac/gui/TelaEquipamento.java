@@ -1,10 +1,26 @@
 package br.edu.cs.poo.ac.gui;
 
-import javax.swing.*;
-import java.awt.*;
-import br.edu.cs.poo.ac.ordem.entidades.Notebook;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
 import br.edu.cs.poo.ac.ordem.entidades.Desktop;
+import br.edu.cs.poo.ac.ordem.entidades.Notebook;
 import br.edu.cs.poo.ac.ordem.mediators.EquipamentoMediator;
+import br.edu.cs.poo.ac.ordem.mediators.ResultadoMediator;
 
 public class TelaEquipamento extends JFrame {
     private JComboBox<String> comboTipo;
@@ -73,16 +89,22 @@ public class TelaEquipamento extends JFrame {
         JButton btnIncluir = new JButton("Incluir");
         JButton btnAlterar = new JButton("Alterar");
         JButton btnExcluir = new JButton("Excluir");
-        JButton btnCancelar = new JButton("Cancelar");
-
+        JButton btnBuscar = new JButton("Buscar");
+        JButton btnCancelar = new JButton("Sair");
+		JButton btnLimparCampos = new JButton("Limpar Campos");
+		
         btnIncluir.addActionListener(e -> incluir());
         btnAlterar.addActionListener(e -> alterar());
         btnExcluir.addActionListener(e -> excluir());
         btnCancelar.addActionListener(e -> dispose());
+        btnBuscar.addActionListener(e -> buscar());
+        btnLimparCampos.addActionListener(e ->limparCampos());
 
         painelBotoes.add(btnIncluir);
         painelBotoes.add(btnAlterar);
         painelBotoes.add(btnExcluir);
+        painelBotoes.add(btnBuscar);
+        painelBotoes.add(btnLimparCampos);
         painelBotoes.add(btnCancelar);
 
         // Adiciona tudo na janela
@@ -131,17 +153,24 @@ public class TelaEquipamento extends JFrame {
             JOptionPane.showMessageDialog(this, "Preencha todos os campos obrigatórios!", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
+        
+        ResultadoMediator resul;
+        
         if (tipo.equals("Notebook")) {
             Notebook n = new Notebook(serial, descricao, novo, valor, extra);
-            mediator.incluirNotebook(n);
+            resul=mediator.incluirNotebook(n);
         } else {
             Desktop d = new Desktop(serial, descricao, novo, valor, extra);
-            mediator.incluirDesktop(d);
+            resul=mediator.incluirDesktop(d);
         }
-
-        JOptionPane.showMessageDialog(this, "Inclusão realizada com sucesso!");
-        limparCampos();
+        if(resul.isOperacaoRealizada()) {
+        	JOptionPane.showMessageDialog(this, "Inclusão realizada com sucesso!");
+        	limparCampos();
+        }
+        else {
+        	JOptionPane.showMessageDialog(this, resul);
+        }
+       
     }
 
     private void alterar() {
@@ -212,6 +241,47 @@ public class TelaEquipamento extends JFrame {
 
         limparCampos();
     }
+    
+    private void buscar() {
+        String tipo = (String) comboTipo.getSelectedItem();
+        String serial = txtSerial.getText().trim();
+
+        if (serial.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Informe o serial do equipamento para buscar!", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (tipo.equals("Notebook")) {
+            Notebook n = mediator.buscarNotebook("NO"+serial);
+            if (n == null) {
+                JOptionPane.showMessageDialog(this, "Notebook não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            // Preenche os campos
+            txtDescricao.setText(n.getDescricao());
+            txtValor.setText(String.valueOf(n.getValorEstimado()));
+            rbNovoSim.setSelected(n.isEhNovo());
+            rbNovoNao.setSelected(!n.isEhNovo());
+            rbExtraSim.setSelected(n.isCarregaDadosSensiveis());
+            rbExtraNao.setSelected(!n.isCarregaDadosSensiveis());
+        } else {
+            Desktop d = mediator.buscarDesktop("DE"+serial);
+            if (d == null) {
+                JOptionPane.showMessageDialog(this, "Desktop não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            // Preenche os campos
+            txtDescricao.setText(d.getDescricao());
+            txtValor.setText(String.valueOf(d.getValorEstimado()));
+            rbNovoSim.setSelected(d.isEhNovo());
+            rbNovoNao.setSelected(!d.isEhNovo());
+            rbExtraSim.setSelected(d.isEhServido());
+            rbExtraNao.setSelected(!d.isEhServido());
+        }
+
+        JOptionPane.showMessageDialog(this, "Equipamento encontrado e carregado com sucesso!");
+    }
+
 
 
     private void limparCampos() {
