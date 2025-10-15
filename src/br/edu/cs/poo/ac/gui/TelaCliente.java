@@ -45,9 +45,6 @@ public class TelaCliente extends JFrame {
 
     private final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(() -> {
 			try {
@@ -59,9 +56,6 @@ public class TelaCliente extends JFrame {
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
 	public TelaCliente() {
 		if (!Beans.isDesignTime()) {
             try {
@@ -225,7 +219,7 @@ public class TelaCliente extends JFrame {
         setModo(Modo.INICIAL);
 
         btnNovo.addActionListener(e -> {
-            String id = txtCpfcnpj.getText().trim();
+            String id = getCpfCnpjLimpo(); // ✅
             if (id.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "CPF/CNPJ deve ser preenchido!");
                 return;
@@ -242,7 +236,7 @@ public class TelaCliente extends JFrame {
 
         btnBuscar.addActionListener(e -> {
             if (Beans.isDesignTime()) return;
-            String id = txtCpfcnpj.getText().trim();
+            String id = getCpfCnpjLimpo(); // ✅
             if (id.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "CPF/CNPJ deve ser preenchido!");
                 return;
@@ -263,7 +257,7 @@ public class TelaCliente extends JFrame {
         	try {
                 LocalDate addData = LocalDate.parse(txtDataAtual.getText(), FMT);
                 Contato addContato = new Contato(txtEmail.getText(), txtCelular.getText(), chkWhatsapp.isSelected());
-                Cliente addCliente = new Cliente(txtCpfcnpj.getText().trim(), txtNomeCompleto.getText(), addContato, addData);
+                Cliente addCliente = new Cliente(getCpfCnpjLimpo(), txtNomeCompleto.getText(), addContato, addData); // ✅
                 ResultadoMediator addResultado = addMediator.incluir(addCliente);
 
                 if(!addResultado.isOperacaoRealizada()) {
@@ -284,7 +278,7 @@ public class TelaCliente extends JFrame {
         	try {
                 LocalDate altData = LocalDate.parse(txtDataAtual.getText(), FMT);
                 Contato altContato = new Contato(txtEmail.getText(), txtCelular.getText(), chkWhatsapp.isSelected());
-                Cliente altCliente = new Cliente(txtCpfcnpj.getText().trim(), txtNomeCompleto.getText(), altContato, altData);
+                Cliente altCliente = new Cliente(getCpfCnpjLimpo(), txtNomeCompleto.getText(), altContato, altData); // ✅
                 ResultadoMediator altResultado = altMediator.alterar(altCliente);
 
                 if(!altResultado.isOperacaoRealizada()) {
@@ -302,7 +296,7 @@ public class TelaCliente extends JFrame {
 
         btnExcluir.addActionListener(e -> {
         	ClienteMediator excMediator = ClienteMediator.getInstancia();
-        	String id = txtCpfcnpj.getText().trim();
+        	String id = getCpfCnpjLimpo(); // ✅
             if (id.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Informe o CPF/CNPJ para excluir.", "Atenção", JOptionPane.WARNING_MESSAGE);
                 return;
@@ -324,6 +318,11 @@ public class TelaCliente extends JFrame {
             if (txtCpfcnpj.isEnabled()) txtCpfcnpj.setText("");
             limparCamposDados();
         });
+    }
+
+    // ✅ Novo método: retorna o CPF/CNPJ sem formatação
+    private String getCpfCnpjLimpo() {
+        return txtCpfcnpj.getText().replaceAll("\\D", "");
     }
 
     private void setModo(Modo modo) {
