@@ -45,6 +45,9 @@ public class TelaCliente extends JFrame {
 
     private final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+	/**
+	 * Launch the application.
+	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(() -> {
 			try {
@@ -56,6 +59,9 @@ public class TelaCliente extends JFrame {
 		});
 	}
 
+	/**
+	 * Create the frame.
+	 */
 	public TelaCliente() {
 		if (!Beans.isDesignTime()) {
             try {
@@ -109,22 +115,74 @@ public class TelaCliente extends JFrame {
 
         txtCpfcnpj = new JTextField();
         txtCpfcnpj.setBounds(20, 64, 221, 21);
+
+        ((javax.swing.text.AbstractDocument) txtCpfcnpj.getDocument()).setDocumentFilter(
+            new javax.swing.text.DocumentFilter() {
+                private String soDigitos(String s){ return s.replaceAll("\\D",""); }
+
+                @Override
+                public void insertString(FilterBypass fb, int off, String str, javax.swing.text.AttributeSet a)
+                        throws javax.swing.text.BadLocationException {
+                    if (str == null) return;
+                    String atual = fb.getDocument().getText(0, fb.getDocument().getLength());
+                    String novo = soDigitos(atual.substring(0, off) + str + atual.substring(off));
+                    if (novo.length() <= 14) {
+                        super.insertString(fb, off, str.replaceAll("\\D",""), a);
+                    } else {
+                        int pode = 14 - soDigitos(atual).length();
+                        if (pode > 0) super.insertString(fb, off, soDigitos(str).substring(0, pode), a);
+                    }
+                }
+
+                @Override
+                public void replace(FilterBypass fb, int off, int len, String str, javax.swing.text.AttributeSet a)
+                        throws javax.swing.text.BadLocationException {
+                    String s = (str == null) ? "" : str;
+                    String atual = fb.getDocument().getText(0, fb.getDocument().getLength());
+                    String aposRemocao = atual.substring(0, off) + atual.substring(off + len);
+                    String novo = soDigitos(aposRemocao + s);
+                    if (novo.length() <= 14) {
+                        super.replace(fb, off, len, s.replaceAll("\\D",""), a);
+                    } else {
+                        int pode = 14 - soDigitos(aposRemocao).length();
+                        if (pode > 0) super.replace(fb, off, len, soDigitos(s).substring(0, pode), a);
+                    }
+                }
+            }
+        );
+
         getContentPane().add(txtCpfcnpj);
+
         txtCpfcnpj.addFocusListener(new FocusAdapter() {
         	@Override
         	public void focusLost(FocusEvent e) {
-        		String cpfCnpj = txtCpfcnpj.getText().replaceAll("\\D", "");
+        	    String cpfCnpj = txtCpfcnpj.getText().replaceAll("\\D", "");
         	    if (cpfCnpj.isEmpty()) { txtCpfcnpj.setText(""); return; }
+
+        	    javax.swing.text.AbstractDocument doc =
+        	        (javax.swing.text.AbstractDocument) txtCpfcnpj.getDocument();
+        	    javax.swing.text.DocumentFilter filtro = doc.getDocumentFilter();
+
         	    if (cpfCnpj.length() == 11) {
-        	      txtCpfcnpj.setText(cpfCnpj.substring(0,3)+"."+cpfCnpj.substring(3,6)+"."+cpfCnpj.substring(6,9)+"-"+cpfCnpj.substring(9));
+        	        String fmt = cpfCnpj.substring(0,3)+"."+cpfCnpj.substring(3,6)+"."+cpfCnpj.substring(6,9)+"-"+cpfCnpj.substring(9);
+        	        doc.setDocumentFilter(null);
+        	        txtCpfcnpj.setText(fmt);
+        	        doc.setDocumentFilter(filtro);
         	    } else if (cpfCnpj.length() == 14) {
-        	      txtCpfcnpj.setText(cpfCnpj.substring(0,2)+"."+cpfCnpj.substring(2,5)+"."+cpfCnpj.substring(5,8)+"/"+
-        	    		  cpfCnpj.substring(8,12)+"-"+cpfCnpj.substring(12));
+        	        String fmt = cpfCnpj.substring(0,2)+"."+cpfCnpj.substring(2,5)+"."+cpfCnpj.substring(5,8)+"/"+
+        	                     cpfCnpj.substring(8,12)+"-"+cpfCnpj.substring(12);
+        	        doc.setDocumentFilter(null);
+        	        txtCpfcnpj.setText(fmt);
+        	        doc.setDocumentFilter(filtro);
         	    } else {
-        	      txtCpfcnpj.setText(cpfCnpj);
+        	        doc.setDocumentFilter(null);
+        	        txtCpfcnpj.setText(cpfCnpj);
+        	        doc.setDocumentFilter(filtro);
         	    }
         	}
+
         });
+
         txtCpfcnpj.setToolTipText("Digite o cpf/cnpj do cliente");
 
         txtEmail = new JTextField();
@@ -219,7 +277,7 @@ public class TelaCliente extends JFrame {
         setModo(Modo.INICIAL);
 
         btnNovo.addActionListener(e -> {
-            String id = getCpfCnpjLimpo(); // ✅
+            String id = txtCpfcnpj.getText().trim();
             if (id.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "CPF/CNPJ deve ser preenchido!");
                 return;
@@ -236,7 +294,7 @@ public class TelaCliente extends JFrame {
 
         btnBuscar.addActionListener(e -> {
             if (Beans.isDesignTime()) return;
-            String id = getCpfCnpjLimpo(); // ✅
+            String id = txtCpfcnpj.getText().trim();
             if (id.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "CPF/CNPJ deve ser preenchido!");
                 return;
@@ -257,7 +315,7 @@ public class TelaCliente extends JFrame {
         	try {
                 LocalDate addData = LocalDate.parse(txtDataAtual.getText(), FMT);
                 Contato addContato = new Contato(txtEmail.getText(), txtCelular.getText(), chkWhatsapp.isSelected());
-                Cliente addCliente = new Cliente(getCpfCnpjLimpo(), txtNomeCompleto.getText(), addContato, addData); // ✅
+                Cliente addCliente = new Cliente(txtCpfcnpj.getText().trim(), txtNomeCompleto.getText(), addContato, addData);
                 ResultadoMediator addResultado = addMediator.incluir(addCliente);
 
                 if(!addResultado.isOperacaoRealizada()) {
@@ -278,7 +336,7 @@ public class TelaCliente extends JFrame {
         	try {
                 LocalDate altData = LocalDate.parse(txtDataAtual.getText(), FMT);
                 Contato altContato = new Contato(txtEmail.getText(), txtCelular.getText(), chkWhatsapp.isSelected());
-                Cliente altCliente = new Cliente(getCpfCnpjLimpo(), txtNomeCompleto.getText(), altContato, altData); // ✅
+                Cliente altCliente = new Cliente(txtCpfcnpj.getText().trim(), txtNomeCompleto.getText(), altContato, altData);
                 ResultadoMediator altResultado = altMediator.alterar(altCliente);
 
                 if(!altResultado.isOperacaoRealizada()) {
@@ -296,7 +354,7 @@ public class TelaCliente extends JFrame {
 
         btnExcluir.addActionListener(e -> {
         	ClienteMediator excMediator = ClienteMediator.getInstancia();
-        	String id = getCpfCnpjLimpo(); // ✅
+        	String id = txtCpfcnpj.getText().trim();
             if (id.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Informe o CPF/CNPJ para excluir.", "Atenção", JOptionPane.WARNING_MESSAGE);
                 return;
@@ -318,11 +376,6 @@ public class TelaCliente extends JFrame {
             if (txtCpfcnpj.isEnabled()) txtCpfcnpj.setText("");
             limparCamposDados();
         });
-    }
-
-    // ✅ Novo método: retorna o CPF/CNPJ sem formatação
-    private String getCpfCnpjLimpo() {
-        return txtCpfcnpj.getText().replaceAll("\\D", "");
     }
 
     private void setModo(Modo modo) {
