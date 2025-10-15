@@ -16,7 +16,10 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.DocumentFilter.FilterBypass;
 import javax.swing.text.MaskFormatter;
 
 import br.edu.cs.poo.ac.ordem.entidades.Cliente;
@@ -116,13 +119,14 @@ public class TelaCliente extends JFrame {
         txtCpfcnpj = new JTextField();
         txtCpfcnpj.setBounds(20, 64, 221, 21);
 
-        ((javax.swing.text.AbstractDocument) txtCpfcnpj.getDocument()).setDocumentFilter(
-            new javax.swing.text.DocumentFilter() {
-                private String soDigitos(String s){ return s.replaceAll("\\D",""); }
+        // filtro que permite apenas dígitos e limita até 14 (cpf 11 / cnpj 14)
+        ((AbstractDocument) txtCpfcnpj.getDocument()).setDocumentFilter(
+            new DocumentFilter() {
+                private String soDigitos(String s){ return s == null ? "" : s.replaceAll("\\D",""); }
 
                 @Override
                 public void insertString(FilterBypass fb, int off, String str, javax.swing.text.AttributeSet a)
-                        throws javax.swing.text.BadLocationException {
+                        throws BadLocationException {
                     if (str == null) return;
                     String atual = fb.getDocument().getText(0, fb.getDocument().getLength());
                     String novo = soDigitos(atual.substring(0, off) + str + atual.substring(off));
@@ -136,7 +140,7 @@ public class TelaCliente extends JFrame {
 
                 @Override
                 public void replace(FilterBypass fb, int off, int len, String str, javax.swing.text.AttributeSet a)
-                        throws javax.swing.text.BadLocationException {
+                        throws BadLocationException {
                     String s = (str == null) ? "" : str;
                     String atual = fb.getDocument().getText(0, fb.getDocument().getLength());
                     String aposRemocao = atual.substring(0, off) + atual.substring(off + len);
@@ -159,9 +163,8 @@ public class TelaCliente extends JFrame {
         	    String cpfCnpj = txtCpfcnpj.getText().replaceAll("\\D", "");
         	    if (cpfCnpj.isEmpty()) { txtCpfcnpj.setText(""); return; }
 
-        	    javax.swing.text.AbstractDocument doc =
-        	        (javax.swing.text.AbstractDocument) txtCpfcnpj.getDocument();
-        	    javax.swing.text.DocumentFilter filtro = doc.getDocumentFilter();
+        	    AbstractDocument doc = (AbstractDocument) txtCpfcnpj.getDocument();
+        	    DocumentFilter filtro = doc.getDocumentFilter();
 
         	    if (cpfCnpj.length() == 11) {
         	        String fmt = cpfCnpj.substring(0,3)+"."+cpfCnpj.substring(3,6)+"."+cpfCnpj.substring(6,9)+"-"+cpfCnpj.substring(9);
@@ -180,7 +183,6 @@ public class TelaCliente extends JFrame {
         	        doc.setDocumentFilter(filtro);
         	    }
         	}
-
         });
 
         txtCpfcnpj.setToolTipText("Digite o cpf/cnpj do cliente");
@@ -277,7 +279,7 @@ public class TelaCliente extends JFrame {
         setModo(Modo.INICIAL);
 
         btnNovo.addActionListener(e -> {
-            String id = txtCpfcnpj.getText().trim();
+            String id = txtCpfcnpj.getText().replaceAll("\\D", ""); // <-- CPF/CNPJ sem máscara
             if (id.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "CPF/CNPJ deve ser preenchido!");
                 return;
@@ -294,7 +296,7 @@ public class TelaCliente extends JFrame {
 
         btnBuscar.addActionListener(e -> {
             if (Beans.isDesignTime()) return;
-            String id = txtCpfcnpj.getText().trim();
+            String id = txtCpfcnpj.getText().replaceAll("\\D", ""); // <-- CPF/CNPJ sem máscara
             if (id.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "CPF/CNPJ deve ser preenchido!");
                 return;
@@ -315,13 +317,14 @@ public class TelaCliente extends JFrame {
         	try {
                 LocalDate addData = LocalDate.parse(txtDataAtual.getText(), FMT);
                 Contato addContato = new Contato(txtEmail.getText(), txtCelular.getText(), chkWhatsapp.isSelected());
-                Cliente addCliente = new Cliente(txtCpfcnpj.getText().trim(), txtNomeCompleto.getText(), addContato, addData);
+                String cpfCnpj = txtCpfcnpj.getText().replaceAll("\\D", ""); // <-- CPF/CNPJ sem máscara
+                Cliente addCliente = new Cliente(cpfCnpj, txtNomeCompleto.getText(), addContato, addData);
                 ResultadoMediator addResultado = addMediator.incluir(addCliente);
 
                 if(!addResultado.isOperacaoRealizada()) {
-                    String erros = "Operação não realizada pois:";
-                    for(String m : addResultado.getMensagensErro().listar()) erros += "\n" + m;
-                    JOptionPane.showMessageDialog(this, erros, "Resultado da Inclusão", JOptionPane.WARNING_MESSAGE);
+                    StringBuilder erros = new StringBuilder("Operação não realizada pois:");
+                    for(String m : addResultado.getMensagensErro().listar()) erros.append("\n").append(m);
+                    JOptionPane.showMessageDialog(this, erros.toString(), "Resultado da Inclusão", JOptionPane.WARNING_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(this, "Cliente cadastrado com sucesso!", "Resultado da Inclusão", JOptionPane.INFORMATION_MESSAGE);
                     setModo(Modo.INICIAL);
@@ -336,13 +339,14 @@ public class TelaCliente extends JFrame {
         	try {
                 LocalDate altData = LocalDate.parse(txtDataAtual.getText(), FMT);
                 Contato altContato = new Contato(txtEmail.getText(), txtCelular.getText(), chkWhatsapp.isSelected());
-                Cliente altCliente = new Cliente(txtCpfcnpj.getText().trim(), txtNomeCompleto.getText(), altContato, altData);
+                String cpfCnpj = txtCpfcnpj.getText().replaceAll("\\D", ""); // <-- CPF/CNPJ sem máscara
+                Cliente altCliente = new Cliente(cpfCnpj, txtNomeCompleto.getText(), altContato, altData);
                 ResultadoMediator altResultado = altMediator.alterar(altCliente);
 
                 if(!altResultado.isOperacaoRealizada()) {
-                    String erros = "Operação não realizada pois:";
-                    for(String m : altResultado.getMensagensErro().listar()) erros += "\n" + m;
-                    JOptionPane.showMessageDialog(this, erros, "Resultado da Alteração", JOptionPane.WARNING_MESSAGE);
+                    StringBuilder erros = new StringBuilder("Operação não realizada pois:");
+                    for(String m : altResultado.getMensagensErro().listar()) erros.append("\n").append(m);
+                    JOptionPane.showMessageDialog(this, erros.toString(), "Resultado da Alteração", JOptionPane.WARNING_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(this, "Cadastro alterado com sucesso!", "Resultado da Alteração", JOptionPane.INFORMATION_MESSAGE);
                     setModo(Modo.INICIAL);
@@ -354,16 +358,16 @@ public class TelaCliente extends JFrame {
 
         btnExcluir.addActionListener(e -> {
         	ClienteMediator excMediator = ClienteMediator.getInstancia();
-        	String id = txtCpfcnpj.getText().trim();
+        	String id = txtCpfcnpj.getText().replaceAll("\\D", ""); // <-- CPF/CNPJ sem máscara
             if (id.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Informe o CPF/CNPJ para excluir.", "Atenção", JOptionPane.WARNING_MESSAGE);
                 return;
             }
         	ResultadoMediator resExcCliente = excMediator.excluir(id);
         	if(!resExcCliente.isOperacaoRealizada()) {
-        		String excErros = "Operação não realizada pois:";
-        		for(String m : resExcCliente.getMensagensErro().listar()) excErros += "\n" + m;
-        		JOptionPane.showMessageDialog(this, excErros, "Resultado da Exclusão", JOptionPane.WARNING_MESSAGE);
+        		StringBuilder excErros = new StringBuilder("Operação não realizada pois:");
+        		for(String m : resExcCliente.getMensagensErro().listar()) excErros.append("\n").append(m);
+        		JOptionPane.showMessageDialog(this, excErros.toString(), "Resultado da Exclusão", JOptionPane.WARNING_MESSAGE);
         	} else {
         		JOptionPane.showMessageDialog(this, "Exclusão realizada com sucesso!", "Resultado da Exclusão", JOptionPane.INFORMATION_MESSAGE);
                 setModo(Modo.INICIAL);
