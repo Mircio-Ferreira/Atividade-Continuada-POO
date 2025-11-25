@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
 
-public class Cliente implements Serializable {
+import br.edu.cs.poo.ac.utils.Registro;
+
+public class Cliente implements Registro {
 
 	private String cpfCnpj;
 	private String nome;
@@ -45,5 +47,8 @@ public class Cliente implements Serializable {
 	public int getIdadeCadastro() {
 		return Period.between(dataCadastro, LocalDate.now()).getYears();
 	}
-
+	
+	public String getId() {
+		return this.cpfCnpj;
+	}
 }
