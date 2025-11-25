@@ -1,5 +1,7 @@
 package br.edu.cs.poo.ac.utils;
 
-public interface Registro {
+import java.io.Serializable;
+
+public interface Registro extends Serializable {
 	String getId();
 }
