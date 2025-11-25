@@ -9,5 +9,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="C:/Users/mirci/Downloads/PersistenciaObjetos.jar"/>
 	<classpathentry kind="lib" path="C:/Users/mirci/Downloads/lombok.jar"/>
+	<classpathentry kind="lib" path="C:/Users/User/Downloads/PersistenciaObjetos.jar"/>
+	<classpathentry kind="lib" path="C:/Users/User/Downloads/lombok.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
