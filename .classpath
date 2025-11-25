@@ -7,7 +7,7 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="E:/Cesar/Java/Atividade-Continuada-POO/lombok.jar"/>
-	<classpathentry kind="lib" path="E:/Cesar/Java/Atividade-Continuada-POO/PersistenciaObjetos.jar"/>
+	<classpathentry kind="lib" path="C:/codigo/POO/AtividadeContinuada/AtividadeContinuadaPOO/libs/lombok.jar"/>
+	<classpathentry kind="lib" path="C:/codigo/POO/AtividadeContinuada/AtividadeContinuadaPOO/libs/PersistenciaObjetos.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
