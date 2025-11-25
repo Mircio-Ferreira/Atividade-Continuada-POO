@@ -21,5 +21,7 @@ public class Notebook extends Equipamento {
 		return "NO";
 	}
 
-
+	public String getId() {
+		return getIdTipo() + super.getSerial();
+	}
 }

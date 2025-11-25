@@ -3,7 +3,6 @@ package br.edu.cs.poo.ac.ordem.daos;
 import java.io.Serializable;
 
 import br.edu.cesarschool.next.oo.persistenciaobjetos.CadastroObjetos;
-import br.edu.cs.poo.ac.ordem.entidades.Cliente;
 import br.edu.cs.poo.ac.utils.Registro;
 
 public abstract class DAOGenerico {
@@ -43,11 +42,9 @@ public abstract class DAOGenerico {
 
 	public Registro[] buscarTodos() {
 		Serializable[] ret = cadastroObjetos.buscarTodos();
-		Registro[] retorno;
-		
 		if (ret == null || ret.length == 0) return new Registro[0];
-
-		retorno = new Cliente[ret.length];
+		
+		Registro[] retorno = new Registro[ret.length];
 		for (int i = 0; i < ret.length; i++) {
 			retorno[i] = (Registro) ret[i];
 		}

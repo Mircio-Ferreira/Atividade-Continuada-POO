@@ -14,4 +14,6 @@ public abstract class Equipamento implements Registro {
 	private String descricao;
 	private boolean ehNovo;
 	private double valorEstimado;
+	
+	public abstract String getIdTipo();
 }
