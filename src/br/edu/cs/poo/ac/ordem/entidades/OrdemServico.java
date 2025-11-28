@@ -43,14 +43,14 @@ public class OrdemServico implements Registro{
 		this.prazoEmDias = prazoEmDias;
 		this.valor = valor;
 	}
-	public OrdemServico(Cliente cli, PrecoBase precoBase, Notebook note, Desktop desk, LocalDateTime data, int prazo, double valor) {
-		this.cliente = cli;
-		this.precoBase = precoBase;
-		this.equipamento = note != null ? note : desk;
-		this.dataHoraAbertura = data;
-		this.prazoEmDias = prazo;
-		this.valor = valor;
-	}
+//	public OrdemServico(Cliente cli, PrecoBase precoBase, Notebook note, Desktop desk, LocalDateTime data, int prazo, double valor) {
+//		this.cliente = cli;
+//		this.precoBase = precoBase;
+//		this.equipamento = note != null ? note : desk;
+//		this.dataHoraAbertura = data;
+//		this.prazoEmDias = prazo;
+//		this.valor = valor;
+//	}
 	public LocalDate getDataEstimadaEntrega() {
 		LocalDate dataHora = dataHoraAbertura.toLocalDate();
 		return dataHora.plusDays(prazoEmDias);
